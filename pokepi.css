@@ -45,6 +45,51 @@ html, body {
     box-shadow: inset 0 0 25px rgba(0,0,0,0.4);
 }
 
+/* BOTÓN DE SONIDO FLOTANTE (ESTILO RETRO) */
+.btn-cry-floating {
+    position: absolute;
+    top: 75px;        /* Cae justo en la zona vacía debajo de la barra de título */
+    right: 25px;      /* Alineado al margen derecho interno */
+    z-index: 5;       /* Por encima de la cuadrícula y de la Pokebola de fondo */
+    
+    width: 42px;
+    height: 42px;
+    background-color: #f0f0f0;
+    border: 3px solid #222;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 0px #111;
+    transition: transform 0.05s ease;
+}
+
+.btn-cry-floating img {
+    width: 20px;
+    height: 20px;
+    image-rendering: pixelated;
+}
+
+/* Efectos del Botón de Grito */
+.btn-cry-floating:hover:not(:disabled) {
+    background-color: #fff;
+}
+
+.btn-cry-floating:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0px #111;
+}
+
+.btn-cry-floating:disabled {
+    background-color: #7fa3b5;
+    border-color: #4a5f6b;
+    opacity: 0.4;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .pokemon-title-box {
     background-color: #3a637c;
     color: white;
@@ -306,4 +351,71 @@ html, body {
     overflow-y: auto;
     text-transform: uppercase; 
     box-shadow: inset 0 0 8px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    html, body { overflow: auto; }
+    
+    .pokedex-container {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+    }
+
+    .screen-left {
+        width: 100%; height: auto;
+        position: sticky; top: 0; z-index: 10;
+        margin-bottom: 10px;
+    }
+
+    .screen-right {
+        width: 100%; height: 60vh; /* Lista con scroll propio */
+    }
+}
+
+.btn-cry-floating { position: absolute; top: 75px; right: 25px; z-index: 5; width: 42px; height: 42px; border-radius: 50%; border: 3px solid #222; cursor: pointer; }
+.pokemon-title-box { background-color: #3a637c; color: white; width: 100%; text-align: center; padding: 12px 0; font-weight: bold; border: 3px solid #222; border-radius: 6px; }
+.sprite-display-zone { flex: 1; display: flex; justify-content: center; align-items: center; }
+.pokemon-sprite { image-rendering: pixelated; }
+.pokemon-list-scroll { flex: 1; overflow-y: auto; }
+.pokemon-item { padding: 16px; cursor: pointer; border-bottom: 2px dashed #ccc; }
+.pokemon-item.active { background: #fff; border-left: 8px solid #3a637c; }
+.info-modal { position: absolute; top: 25px; left: 25px; width: calc(100% - 50px); height: calc(100% - 50px); background: #c8e8f8; display: none; z-index: 100; padding: 20px; }
+.info-modal.open { display: flex; flex-direction: column; }
+
+/* Estilo del contenedor principal de la evolución */
+#evolutionChainBox {
+    display: flex;
+    justify-content: center; /* Centra los hijos */
+    align-items: center;
+    width: fit-content;      /* La magia: se adapta al contenido */
+    max-width: 95%;          /* Pero no se sale de la pantalla */
+    margin: 15px auto;       /* Centra la caja misma en el modal */
+    padding: 20px;
+    background: #fff;
+    border: 3px solid #222;
+    border-radius: 8px;
+    overflow-x: auto;        /* Scroll solo si es muy largo */
+}
+
+/* Para asegurar que los Pokémon no se achiquen */
+.evolution-node {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Esto evita que el navegador los aplaste */
+}
+
+/* Estilo de la tarjeta de cada Pokémon en la cadena */
+.pkm-evolution-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+}
+
+.pkm-evolution-card:hover {
+    transform: scale(1.05);
 }
