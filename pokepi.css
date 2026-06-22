@@ -56,9 +56,9 @@ html, body {
 }
 
 /* BOTÓN DE SONIDO FLOTANTE */
-.btn-cry-floating {
-    position: absolute; /* Lo independiza del flujo para ubicarlo con coordenadas exactas */
-    top: 75px;        
+.btn-music-floating {
+    position: fixed; /* Lo independiza del flujo para ubicarlo con coordenadas exactas */
+    bottom: 25px;        
     right: 25px;      
     z-index: 5;        /* Lo coloca por encima de la Pokéball giratoria de fondo */
     width: 42px;
@@ -75,18 +75,18 @@ html, body {
 }
 
 /* Icono del parlante/sonido dentro del botón */
-.btn-cry-floating img {
+.btn-music-floating img {
     width: 20px;
     height: 20px;
     image-rendering: pixelated; /* Evita que el icono se vea borroso al renderizarse */
 }
 
 /* Estados e interacciones del botón de sonido */
-.btn-cry-floating:hover:not(:disabled) { background-color: #fff; }
+.btn-music-floating:hover:not(:disabled) { background-color: #fff; }
 /* Efecto físico de hundimiento al hacer click */
-.btn-cry-floating:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0px #111; }
+.btn-music-floating:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0px #111; }
 /* Estilos visuales opacos para cuando el Pokémon no tiene audio cargado */
-.btn-cry-floating:disabled {
+.btn-music-floating:disabled {
     background-color: #7fa3b5;
     border-color: #4a5f6b;
     opacity: 0.4;
@@ -251,6 +251,13 @@ html, body {
 .btn-shapes:active { transform: translateY(3px); box-shadow: none; }
 /* Bloqueo visual si el Pokémon actual no posee formas alternativas */
 .btn-shapes:disabled { background-color: #556355; opacity: 0.5; box-shadow: none; cursor: not-allowed; }
+
+/* Botón Música (Gris) */
+.btn-cry { background-color: #00ad82; box-shadow: 0 4px 0 #00533f; }
+.btn-cry:hover { background-color: #004736; }
+.btn-cry:active { transform: translateY(3px); box-shadow: none; }
+/* Bloqueo visual si el Pokémon actual no posee formas alternativas */
+.btn-cry:disabled { background-color: #ccc; opacity: 0.5; box-shadow: none; cursor: not-allowed; }
 
 /* ==========================================================================
    LADO DERECHO: Lista de selección y buscador

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokédex Virtual - Pantalla Completa</title>
     <link rel="stylesheet" href="pokepi.css">
+    <link rel="shortcut icon" href="img/Poké_Ball_icon.png" type="image/x-icon">
 </head>
 <body>
 
@@ -12,8 +13,8 @@
         
         <div class="screen-left">
             
-            <button id="btnCry" class="btn-cry-floating" title="Escuchar Grito" disabled>
-                <img src="https://cdn-icons-png.flaticon.com/512/727/727269.png" alt="Cry">
+            <button id="btnMusicToggle" class="btn-music-floating" title="Activar musica">
+                <img src="img/volume-mute.png" alt="Musica pausada">
             </button>
 
             <div class="pokemon-title-box" id="pokeName">Cargando...</div>
@@ -26,8 +27,9 @@
 
             <div class="action-buttons">
                 <button class="btn-retro btn-info" id="btnInfo">Info</button>
-                <button class="btn-retro btn-shapes" id="btnShapes" disabled>Formas</button>
+                <button class="btn-retro btn-shapes" id="btnShapes" disabled>Forms</button>
                 <button class="btn-retro btn-shiny" id="btnShiny">★ Shiny</button>
+                <button class="btn-retro btn-cry" id="btnCry">Cry</button>
             </div>
         </div>
         
@@ -48,7 +50,7 @@
 
         <div class="info-modal" id="shapesModal">
             <div class="modal-header">
-                <span class="modal-title">Formas</span>
+                <span class="modal-title">Forms</span>
                 <button class="btn-close-modal" id="btnCloseShapesModal">X</button>
             </div>
             <div class="modal-body" id="modalShapesBody"></div>

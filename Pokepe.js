@@ -3,6 +3,8 @@
 // ==========================================
 // Archivo de audio local que se usará para la música ambiental de la Pokédex
 const URL_MUSICA_FONDO = "Littlerooot_town.mp3"; 
+const ICONO_MUSICA_ACTIVA = "volume.png";
+const ICONO_MUSICA_PAUSADA = "mute.png";
 
 // Selección de elementos del DOM (Document Object Model) para interactuar con el HTML
 const listaPokemon = document.getElementById('pokemonList'); // Contenedor del listado lateral derecho
@@ -12,7 +14,7 @@ const uiTypes = document.getElementById('pokeTypes');       // Contenedor para l
 const pokeSearch = document.getElementById('pokeSearch');   // Barra de entrada de texto para buscar
 
 // Botón de inicio para saltar el bloqueo de autoplay estricto que tienen los navegadores modernos
-const btnIniciarPokedex = document.getElementById('btnIniciarPokedex'); 
+const btnMusicToggle = document.getElementById('btnMusicToggle'); 
 
 // Botones de acción e interactividad de la consola retro
 const btnInfo = document.getElementById('btnInfo');     // Abre el modal con estadísticas, debilidades y evoluciones
@@ -82,14 +84,22 @@ function prepararAudio() {
     }
 
     // Si existe el botón físico de encendido/inicio en el HTML
-    if (btnIniciarPokedex) {
-        btnIniciarPokedex.addEventListener('click', () => {
-            if (bgMusic) {
-                bgMusic.play().catch(err => console.log("Bloqueo de audio del navegador:", err));
+    if (btnMusicToggle) {
+        actualizarIconoMusica();
+
+        btnMusicToggle.addEventListener('click', () => {
+            if (!bgMusic) return;
+
+            if (bgMusic.paused) {
+                bgMusic.play()
+                    .then(actualizarIconoMusica)
+                    .catch(err => console.log("Bloqueo de audio del navegador:", err));
+            } else {
+                bgMusic.pause();
+                actualizarIconoMusica();
             }
         });
     } else {
-        // Alternativa de contingencia: Si no hay botón, la música empieza automáticamente al primer click que el usuario haga en cualquier lado
         const reproducirPrimerClick = () => {
             if (bgMusic) {
                 bgMusic.play().catch(err => console.log("Esperando interacción:", err));
@@ -98,6 +108,18 @@ function prepararAudio() {
         };
         document.addEventListener('click', reproducirPrimerClick);
     }
+}
+
+function actualizarIconoMusica() {
+    if (!btnMusicToggle || !bgMusic) return;
+
+    const iconoMusica = btnMusicToggle.querySelector('img');
+    if (!iconoMusica) return;
+
+    const musicaPausada = bgMusic.paused;
+    iconoMusica.src = 'img/' + (musicaPausada ? ICONO_MUSICA_PAUSADA : ICONO_MUSICA_ACTIVA);
+    iconoMusica.alt = musicaPausada ? "Musica pausada" : "Musica activa";
+    btnMusicToggle.title = musicaPausada ? "Activar musica" : "Pausar musica";
 }
 
 // Evento para escuchar la barra de búsqueda en tiempo real (Filtrado dinámico 'on input')
