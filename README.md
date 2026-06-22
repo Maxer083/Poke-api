@@ -1,183 +1,219 @@
 # Pokedex Virtual
 
-Proyecto web estatico que implementa una Pokedex interactiva usando la API publica de Pokemon. La aplicacion permite buscar Pokemon, ver su sprite, tipos, estadisticas, descripcion, debilidades, fortalezas ofensivas, formas alternativas, cadena evolutiva, version shiny y grito oficial cuando la API lo provee.
+Proyecto web estatico que implementa una Pokedex interactiva con estetica retro. Consume datos de PokeAPI para listar Pokemon, mostrar informacion detallada, reproducir gritos, alternar sprites shiny, consultar formas alternativas y visualizar cadenas evolutivas.
 
-## Objetivo del proyecto
+La aplicacion esta hecha con HTML, CSS y JavaScript puro. No usa frameworks, dependencias instalables ni sistema de build.
 
-La idea principal es recrear una Pokedex con estetica retro de consola, ocupando la pantalla completa y separando la experiencia en dos paneles:
+## Objetivo
 
-- Panel izquierdo: muestra el Pokemon seleccionado, su sprite, tipos y botones de accion.
-- Panel derecho: contiene el buscador y la lista navegable de Pokemon.
+El proyecto recrea una Pokedex de pantalla completa dividida en dos zonas principales:
 
-El proyecto esta desarrollado solo con tecnologias del navegador: HTML, CSS y JavaScript puro, sin frameworks ni sistema de build.
+- Panel izquierdo: muestra el Pokemon seleccionado, su sprite, tipos y acciones principales.
+- Panel derecho: muestra un buscador y una lista scrolleable de Pokemon.
 
-## Estructura de archivos
+Ademas, incluye modales para ver detalles avanzados y formas alternativas.
+
+## Estructura del proyecto
 
 ```text
 Poke-api/
 +-- pokeapi.html          # Estructura principal de la interfaz
-+-- pokepi.css            # Estilos visuales, responsive y estetica retro
-+-- Pokepe.js             # Logica de consumo de API e interactividad
++-- pokepi.css            # Estilos, responsive y estetica retro
++-- Pokepe.js             # Logica de datos, eventos, audio y renderizado
 +-- Littlerooot_town.mp3  # Musica ambiental local
-+-- descarga.png          # Imagen local del proyecto
-+-- .git/                 # Repositorio Git
++-- README.md             # Documentacion del proyecto
++-- img/
+    +-- volume.png        # Icono de musica activa
+    +-- mute.png          # Icono de musica pausada
+    +-- Poke_Ball_icon.png # Icono de Pokeball / favicon
 ```
 
-## Como ejecutar el proyecto
+## Como ejecutarlo
 
-No necesita instalacion de dependencias. Al ser una app estatica, se puede abrir directamente el archivo:
+No requiere instalacion. Se puede abrir directamente:
 
 ```text
 pokeapi.html
 ```
 
-Tambien puede servirse con cualquier servidor local simple. La aplicacion requiere conexion a internet para consultar PokeAPI, cargar sprites externos, iconos y la fuente de Google Fonts.
+Tambien puede servirse con un servidor local simple. La app necesita conexion a internet para consultar PokeAPI, obtener sprites remotos y cargar la fuente externa.
 
-## Tecnologias usadas
+## Archivos principales
 
-- HTML5: define la estructura de la Pokedex, los paneles, botones, buscador y modales.
-- CSS3: construye el aspecto visual retro, la distribucion responsive, animaciones y colores por tipo.
-- JavaScript vanilla: maneja estado, eventos, llamadas `fetch`, renderizado dinamico y audio.
-- PokeAPI: fuente principal de datos de Pokemon.
-- Google Fonts: carga la fuente `Press Start 2P`.
+### `pokeapi.html`
 
-## Funcionamiento general
+Define la estructura base de la aplicacion:
 
-Cuando el navegador termina de cargar el documento, `Pokepe.js` ejecuta la inicializacion:
+- Contenedor principal `.pokedex-container`.
+- Panel izquierdo `.screen-left`.
+- Boton flotante `btnMusicToggle` para activar o pausar la musica.
+- Nombre del Pokemon `pokeName`.
+- Imagen del sprite `pokeSprite`.
+- Contenedor de tipos `pokeTypes`.
+- Botones `Info`, `Forms`, `Shiny` y `Cry`.
+- Panel derecho con buscador `pokeSearch` y lista `pokemonList`.
+- Modal de informacion `infoModal`.
+- Modal de formas `shapesModal`.
 
-1. Llama a `cargarPokemones()`.
-2. Descarga un listado amplio desde `https://pokeapi.co/api/v2/pokemon?limit=1400&offset=0`.
-3. Separa Pokemon base nacionales de variantes especiales.
-4. Renderiza la lista lateral.
-5. Carga automaticamente el primer Pokemon disponible.
-6. Prepara la musica de fondo local `Littlerooot_town.mp3`.
+### `pokepi.css`
 
-La app mantiene en memoria tres estructuras importantes:
+Contiene toda la capa visual:
 
-- `listaBaseGlobal`: Pokemon base con ID hasta 1025.
-- `todosLosPokemonRaw`: listado completo recibido desde PokeAPI.
-- `diccionarioVariantes`: agrupacion de formas alternativas por nombre raiz.
+- Layout de pantalla completa en dos columnas.
+- Estilo de consola retro con bordes gruesos, sombras duras y fuente pixelada.
+- Boton flotante de musica.
+- Botones de accion.
+- Badges de tipos Pokemon con colores por tipo.
+- Lista lateral scrolleable.
+- Modales animados.
+- Arbol evolutivo.
+- Media query para adaptar la Pokedex a pantallas menores a 768px.
 
-## Funcionalidades principales
+### `Pokepe.js`
 
-### Busqueda
+Centraliza el comportamiento de la app:
 
-El input `pokeSearch` filtra la lista en tiempo real usando coincidencias por nombre. Cada cambio vuelve a renderizar el panel derecho con los resultados encontrados.
+- Inicializacion al cargar el DOM.
+- Consumo de PokeAPI con `fetch`.
+- Renderizado dinamico de la lista.
+- Actualizacion del Pokemon seleccionado.
+- Control de musica de fondo.
+- Reproduccion del grito del Pokemon.
+- Alternancia entre sprite normal y shiny.
+- Calculo de efectividades de tipos.
+- Construccion del modal de informacion.
+- Construccion recursiva de cadenas evolutivas.
+- Manejo de formas alternativas.
 
-### Seleccion de Pokemon
+## Flujo de funcionamiento
 
-Cada item de la lista ejecuta `actualizarDetalles(urlPokemon)`, que descarga la informacion completa del Pokemon seleccionado y actualiza:
+Al cargar la pagina:
 
-- Nombre.
-- Sprite normal o shiny.
-- Tipos elementales.
-- Estado del boton de grito.
-- Disponibilidad de formas alternativas.
+1. Se ejecuta el evento `DOMContentLoaded`.
+2. Se llama a `cargarPokemones()`.
+3. La app consulta `https://pokeapi.co/api/v2/pokemon?limit=1400&offset=0`.
+4. Se separan Pokemon base y variantes especiales.
+5. Se renderiza la lista lateral.
+6. Se carga automaticamente el primer Pokemon disponible.
+7. Se prepara el audio de fondo con `prepararAudio()`.
 
-### Sprites y modo shiny
+## Estado en memoria
 
-La app prioriza sprites animados de la generacion V, si existen:
+El JavaScript usa variables globales simples para manejar el estado:
+
+- `pokemonActualData`: datos completos del Pokemon actualmente visible.
+- `modoShinyActivo`: indica si el sprite shiny esta activo.
+- `urlSpriteNormal`: URL del sprite normal.
+- `urlSpriteShiny`: URL del sprite shiny.
+- `audioActual`: audio del grito en reproduccion.
+- `bgMusic`: musica de fondo.
+- `todosLosPokemonRaw`: respuesta completa de PokeAPI.
+- `listaBaseGlobal`: Pokemon base de la Pokedex nacional.
+- `diccionarioVariantes`: formas alternativas agrupadas por Pokemon base.
+
+## Funcionalidades
+
+### Busqueda de Pokemon
+
+El campo `pokeSearch` filtra la lista en tiempo real. El filtro compara el texto ingresado contra el nombre de cada Pokemon.
+
+### Seleccion y detalle
+
+Al hacer click en un Pokemon de la lista, `actualizarDetalles(urlPokemon)` consulta su endpoint individual y actualiza nombre, sprite, tipos, estado del boton de grito y disponibilidad de formas.
+
+### Sprites normales y shiny
+
+La app intenta usar sprites animados de la generacion V:
 
 ```js
 sprites.versions["generation-v"]["black-white"].animated
 ```
 
-Si no hay sprite animado, usa el sprite estatico por defecto. El boton `Shiny` alterna entre `urlSpriteNormal` y `urlSpriteShiny`.
+Si no existen, usa sprites estaticos de PokeAPI. El boton `Shiny` alterna entre la version normal y variocolor.
 
-### Grito del Pokemon
+### Musica de fondo
 
-El boton de sonido usa la propiedad `cries.latest` entregada por PokeAPI. Si el Pokemon no tiene audio disponible, el boton queda deshabilitado.
-
-### Modal de informacion
-
-El boton `Info` abre un modal generado por `mostrarMenuInfo(data)`. Este modal incluye:
-
-- Altura.
-- Peso.
-- Estadisticas base.
-- Descripcion oficial en espanol, tomada desde `pokemon-species`.
-- Analisis defensivo de tipos.
-- Analisis ofensivo de tipos.
-- Cadena evolutiva.
-
-### Analisis de tipos
-
-El archivo JavaScript incluye una tabla local llamada `TABLA_EFECTIVIDADES`. Con esa matriz calcula:
-
-- Debilidades x2.
-- Debilidades x4.
-- Tipos a los que el Pokemon golpea super efectivo x2.
-- Casos ofensivos x4 cuando sus dos tipos son fuertes contra el mismo objetivo.
-
-### Cadena evolutiva
-
-Para construir evoluciones, la app consulta:
-
-```text
-/api/v2/pokemon-species/{id}/
-```
-
-Desde esa respuesta obtiene la URL de `evolution_chain` y renderiza un arbol evolutivo dinamico. La construccion es recursiva, por lo que soporta ramas multiples como Eevee.
-
-Tambien incluye un caso especial manual para Rockruff/Lycanroc, porque esa rama puede venir incompleta o dificil de representar desde la API.
-
-### Formas alternativas
-
-Las variantes especiales se detectan por ID mayor o igual a 10001 y se agrupan por nombre base. Por ejemplo, una variante como `raichu-alola` queda asociada a `raichu`.
-
-Si el Pokemon actual tiene variantes, se habilita el boton `Formas`, que abre un modal con opciones para cambiar entre forma original y variantes.
-
-### Musica ambiental
-
-El proyecto incluye musica de fondo local mediante:
+La musica usa el archivo local:
 
 ```js
 const URL_MUSICA_FONDO = "Littlerooot_town.mp3";
 ```
 
-Por las politicas de autoplay de los navegadores, la reproduccion se intenta activar despues de una interaccion del usuario.
+El boton `btnMusicToggle` funciona como interruptor:
 
-## Diseno visual
+- Si la musica esta pausada, llama a `bgMusic.play()`.
+- Si la musica esta sonando, llama a `bgMusic.pause()`.
+- El icono cambia entre `img/volume.png` e `img/mute.png`.
 
-La interfaz busca parecer una Pokedex fisica:
+### Grito del Pokemon
 
-- Fondo rojo con borde negro grueso.
-- Dos pantallas internas con tonos celestes.
-- Fuente pixelada.
-- Sprites con `image-rendering: pixelated`.
-- Botones con sombras duras para simular relieve.
-- Pokeball giratoria como marca de agua en el panel del sprite.
-- Colores especificos para cada tipo Pokemon.
+El boton `Cry` reproduce el audio oficial del Pokemon cuando PokeAPI lo provee en `cries.latest`. Si no existe audio, el boton se deshabilita.
 
-El CSS incluye una media query para pantallas de hasta 768px. En mobile, la Pokedex pasa de layout horizontal a vertical: primero el panel del Pokemon y debajo la lista.
+### Modal de informacion
+
+El boton `Info` abre una ficha con:
+
+- Altura.
+- Peso.
+- Estadisticas base.
+- Descripcion en espanol desde `pokemon-species`.
+- Analisis defensivo de tipos.
+- Analisis ofensivo de tipos.
+- Cadena evolutiva.
+
+### Efectividades de tipos
+
+El proyecto incluye una matriz local `TABLA_EFECTIVIDADES`. Con esa tabla calcula:
+
+- Debilidades x2.
+- Debilidades x4.
+- Resistencias e inmunidades aplicadas al calculo defensivo.
+- Tipos contra los que el Pokemon es super efectivo.
+- Casos ofensivos x4 cuando ambos tipos favorecen el mismo objetivo.
+
+### Cadenas evolutivas
+
+La app consulta `pokemon-species`, toma la URL de `evolution_chain` y genera un arbol evolutivo de forma recursiva. Esto permite representar cadenas lineales y ramificadas.
+
+Tambien incluye un caso manual para Rockruff/Lycanroc, porque esa familia evolutiva requiere un tratamiento especial.
+
+### Formas alternativas
+
+Las formas con ID mayor o igual a 10001 se tratan como variantes especiales. Se agrupan por nombre base y se muestran en el modal `Forms` cuando corresponda.
 
 ## Dependencias externas
 
-La aplicacion depende de estos recursos externos:
+- PokeAPI: datos principales, especies, evoluciones, sprites y gritos.
+- Google Fonts: fuente `Press Start 2P`.
+- Sprites remotos de PokeAPI/GitHub para miniaturas evolutivas.
 
-- `https://pokeapi.co/api/v2/` para datos.
-- Repositorio de sprites de PokeAPI en GitHub para miniaturas evolutivas.
-- Icono de Pokeball de Wikimedia.
-- Icono de sonido de Flaticon.
-- Fuente `Press Start 2P` desde Google Fonts.
+Los iconos de musica y Pokeball se manejan como archivos locales dentro de `img/`.
 
-Si alguno de estos servicios no esta disponible o no hay conexion a internet, algunas partes de la app pueden no cargar correctamente.
+## Diseno responsive
 
-## Puntos tecnicos destacables
+En escritorio, la Pokedex se muestra como una interfaz horizontal de dos paneles. En pantallas menores a 768px:
 
-- No usa frameworks: toda la UI dinamica se crea con DOM API.
-- Usa `fetch` y `async/await` para consumir endpoints externos.
-- Maneja estado global simple para el Pokemon actual, modo shiny y audio activo.
-- Agrupa variantes de forma mediante un diccionario en memoria.
-- Genera la cadena evolutiva con una funcion recursiva.
-- Calcula efectividades sin pedirlas a la API, usando una tabla local.
-- Incluye soporte responsive para celulares y tablets.
+- El layout pasa a columna.
+- El panel izquierdo ocupa todo el ancho.
+- La lista se ubica debajo.
+- Los modales pasan a posicion fija para ocupar casi toda la pantalla.
+- La cadena evolutiva se adapta a direccion vertical.
+
+## Observaciones tecnicas
+
+- El proyecto no tiene `package.json` ni dependencias instaladas.
+- No hay pruebas automatizadas configuradas.
+- El codigo esta muy comentado, lo que facilita entender el flujo.
+- Hay bastante HTML inline generado desde JavaScript, especialmente dentro del modal de informacion.
+- Existen textos con problemas de codificacion visibles como `PokÃ©dex` o `â˜… Shiny`.
+- En el estado actual, `pokeapi.html` referencia `img/volume-mute.png`, pero en la carpeta `img/` aparece `mute.png`. Si el icono inicial no se ve, esa ruta es el primer punto a revisar.
 
 ## Posibles mejoras futuras
 
-- Corregir problemas de codificacion de caracteres visibles en algunos textos, como `PokÃ©mon`.
-- Agregar manejo visual de estados de carga y errores de red.
-- Separar el JavaScript en modulos mas pequenos.
-- Mover estilos inline generados por JavaScript hacia clases CSS.
-- Agregar cache local para reducir llamadas repetidas a PokeAPI.
-- Incluir pruebas manuales documentadas o una pequena suite de tests para funciones puras como efectividades y traduccion de evoluciones.
+- Corregir codificacion de caracteres a UTF-8 real en todos los archivos.
+- Revisar la ruta inicial del icono de musica pausada.
+- Separar `Pokepe.js` en modulos mas pequenos.
+- Mover estilos inline generados por JS a clases CSS.
+- Agregar estados visuales de carga y error.
+- Cachear respuestas de PokeAPI para evitar consultas repetidas.
+- Documentar pruebas manuales basicas para busqueda, shiny, audio, cry, forms y evoluciones.
